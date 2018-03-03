@@ -1,0 +1,155 @@
+- set_fact: date="{{lookup('pipe','date +%Y%m%d')}}"
+
+
+- name: Tap homebrew repositories
+  homebrew_tap: tap={{ item }}
+  with_items:
+    - sanemat/font
+    - caskroom/cask
+    - caskroom/homebrew-versions
+
+
+- name: Update homebrew
+  homebrew: 
+    update_homebrew: yes
+    upgrade_all: no
+
+- name: Install homebrew packages
+  homebrew: name={{ item.name }} install_options={{ item.install_options|default()|join(',') }}
+  with_items:
+    - { name: ansible }
+    - { name: git }
+    - { name: jq }
+    - { name: fish }
+    - { name: tmux }
+    - { name: neovim }
+    - { name: direnv }
+    - { name: awscli }
+    - { name: yarn }
+    - { name: tig }
+    - { name: ranger }
+    - { name: global }
+    - { name: ctags }
+    - { name: ag }
+    - { name: tree }
+    - { name: peco }
+    - { name: ghq }
+    - { name: graphviz }
+    - { name: coreutils }
+    - { name: chromedriver }
+    - { name: git-secrets }
+    - { name: reattach-to-user-namespace }
+
+
+- name: Change user shell
+  shell: |
+      shell_x=$(dscl localhost -read Local/Default/Users/$USER UserShell | cut -d' ' -f2)
+      shell_y=$(which fish)
+      cat /etc/shells | grep ${shell_y} &> /dev/null || sudo sh -c "echo ${shell_y} >> /etc/shells"
+      if [[ ${shell_x} != ${shell_y} ]]; then
+        sudo chsh -s ${shell_y} ${USER}
+      fi
+  args:
+      executable: /bin/bash
+  changed_when: false  
+
+
+- name: Install homebrew cask packages
+  homebrew_cask: name={{ item.name }}
+  with_items:
+    - { name: iterm2 }
+    - { name: visual-studio-code }
+    - { name: gimp }
+#    - { name: google-chrome }
+    - { name: google-japanese-ime }
+    - { name: slack }
+    - { name: sequel-pro }
+    - { name: skype }
+    - { name: sourcetree }
+
+
+# Install Ricty
+- name: Install xquartz for ricty
+  homebrew_cask: name=xquartz
+- name: Install ricty
+  homebrew: name={{ item.name }} install_options={{ item.install_options|default()|join(',') }}
+  with_items:
+    - { name: fontforge}
+    - { name: ricty,     install_options: with-powerline } # FIXME オプションが渡らない
+- name: Copy Ricty fonts to ~/Library/Fonts
+  shell: |
+      cp -f $(brew --cellar ricty)/*/share/fonts/Ricty*.ttf ~/Library/Fonts/
+      fc-cache -vf
+  args:
+    creates: ~/Library/Fonts/Ricty-Bold.ttf
+
+- name: Install anyenv
+  git: repo={{ item.repo }} dest={{ item.dest }} update=no
+  with_items:
+    - { repo: 'https://github.com/riywo/anyenv',          dest: '~/.anyenv' }
+    - { repo: 'https://github.com/znz/anyenv-update.git', dest: '~/.anyenv/plugins/anyenv-update' }
+    - { repo: 'https://github.com/znz/anyenv-git.git',    dest: '~/.anyenv/plugins/anyenv-git' }
+
+
+- name: Update anyenv
+  shell: |
+      eval "$(anyenv init -)"
+      anyenv update
+      rm -f /tmp/anyenv-updated-*
+      touch /tmp/anyenv-updated-{{ date }}
+  args:
+      executable: /bin/bash
+      creates: /tmp/anyenv-updated-{{ date }}
+
+
+- name: Install envs
+  shell: |
+      eval "$(anyenv init -)"
+      anyenv install {{ item.env }}
+      eval "$(anyenv init -)"
+      {{ item.env }} install {{ item.version  }}
+      {{ item.env }} rehash
+  args:
+      executable: /bin/bash
+      creates: ~/.anyenv/envs/{{ item.env }}/versions/{{ item.version }}
+  with_items:
+    - { env: 'ndenv',  version: '9.7.1' }
+    - { env: 'ndenv',  version: '6.13.0' }
+    - { env: 'ndenv',  version: '6.10.3' }
+    - { env: 'goenv',  version: '1.10.0' }
+    - { env: 'goenv',  version: '1.9.4' }
+    - { env: 'goenv',  version: '1.8.7' }
+    - { env: 'goenv',  version: '1.8.1' }
+    - { env: 'pyenv',  version: '3.6.4'  }
+    - { env: 'pyenv',  version: '3.6.1'  }
+    - { env: 'phpenv', version: '5.6.30' }
+
+
+- name: Install pyenv-virtualenv
+  git: 
+    repo: 'https://github.com/yyuu/pyenv-virtualenv'
+    dest: '~/.anyenv/envs/pyenv/plugins/pyenv-virtualenv'
+    update: no
+
+
+- name: Setup pyenvs
+  shell: |
+      eval "$(anyenv init -)"
+      pyenv virtualenv {{ item.version }} {{ item.env }}
+  args:
+      executable: /bin/bash
+      creates: ~/.anyenv/envs/pyenv/versions/{{ item.env }}
+  with_items:
+    - { env: 'example',  version: '3.6.4' }
+
+
+- name: Upgrade pyenv pip-packages
+  shell: |
+      eval "$(anyenv init -)"
+      pyenv local {{ item.env }}
+      pip install -r pyenvs/{{ item.env }}.txt
+      rm -rf .python-version
+  args:
+      executable: /bin/bash
+  with_items:
+    - { env: 'example' }

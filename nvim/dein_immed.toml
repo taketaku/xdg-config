@@ -1,0 +1,354 @@
+# vim:set foldmethod=marker:
+# Shougo/dein.vim {{{
+[[plugins]]
+repo = 'Shougo/dein.vim'
+# }}}
+# Shougo/vimproc.vim {{{
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+build = 'make'
+# }}}
+# Shougo/context_filetype.vim {{{
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+# }}}
+# w0ng/vim-hybrid {{{
+[[plugins]]
+repo = 'w0ng/vim-hybrid'
+hook_add = '''
+  set background=dark
+  let g:hybrid_custom_term_colors = 1
+  let g:hybrid_reduced_contrast = 1 " Remove this line if using the default palette.
+  au MyAutoCmd VimEnter * nested colorscheme hybrid
+'''
+# }}}
+# osyo-manga/vim-precious {{{
+[[plugins]]
+repo = 'osyo-manga/vim-precious'
+depends = ['Shougo/context_filetype.vim']
+# }}}
+# scrooloose/nerdcommenter {{{
+[[plugins]]
+repo = 'scrooloose/nerdcommenter'
+# }}}
+# ryanoasis/vim-devicons {{{
+#[[plugins]]
+#repo = 'ryanoasis/vim-devicons'
+# }}}
+# scrooloose/nerdtree {{{
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+let g:NERDTreeDirArrows = 1
+let NERDTreeWinSize=40
+" let NERDTreeShowHidden = 1
+"vim-nerdtree-syntax-highlight
+let s:color_tests= 'FE405F'
+let s:git_orange = 'F54D27'
+let g:NERDTreeExactMatchHighlightColor = {}
+let g:NERDTreeExactMatchHighlightColor['.gitignore'] = s:git_orange
+let g:NERDTreePatternMatchHighlightColor = {}
+let g:NERDTreePatternMatchHighlightColor['.*_test\.go$'] = s:color_tests
+nnoremap tt :<C-u>NERDTreeToggle<CR>
+nnoremap tf :<C-u>NERDTreeFind<CR>
+" vim-devicons
+"let g:webdevicons_conceal_nerdtree_brackets = 1
+"let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+" dir-icons
+"let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+"let g:DevIconsEnableFoldersOpenClose = 1
+"let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
+"let g:DevIconsDefaultFolderOpenSymbol = ''
+" file-icons
+"let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
+"let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
+"let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
+"let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
+"let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
+
+" BOOT: git workspace
+function! X_NERDTree_OpenGitWD() abort
+  let l:project_dir = system('git rev-parse --show-toplevel')
+  let l:current_file = expand('%:p')
+  if v:shell_error
+    return
+  endif
+  execute(':cd ' . l:project_dir)
+  if getftype(l:current_file) ==# 'file'
+    execute(':NERDTreeFind')
+  else
+    execute(':NERDTree')
+  endif
+  execute(':wincmd p')
+endfunction
+augroup x_nerdtree
+  autocmd! x_nerdtree
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  autocmd VimEnter * call X_NERDTree_OpenGitWD()
+augroup END
+'''
+hook_post_source='''
+" MENU: vimdiff
+call NERDTreeAddMenuItem({'text': '(v)imdiff with current node', 'shortcut': 'v', 'callback': 'X_NERDTree_DiffNode'})
+function! X_NERDTree_DiffNode()
+  let current_node = g:NERDTreeFileNode.GetSelected()
+  if current_node.path.isDirectory 
+    let choice =input(
+    \ "Diff with the current node\n" .
+    \ "==========================================================\n" .
+    \ "STOP! Cannot diff with directory\n" .
+    \ "" . current_node.path.str() . ": ")
+  else
+    try
+      execute "wincmd p"
+      execute "vertical diffsplit " current_node.path.str()
+    catch /^NERDTree/
+      call s:echoWarning("Could not diff") 
+    endtry
+  endif
+endfunction
+'''
+# }}}
+# tiagofumo/vim-nerdtree-syntax-highlight {{{
+[[plugins]]
+repo = 'tiagofumo/vim-nerdtree-syntax-highlight'
+# }}}
+# w0rp/ale {{{
+[[plugins]]
+repo = 'w0rp/ale'
+hook_add = '''
+let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
+let g:ale_lint_delay = 2000 " default 200 millis
+let g:ale_lint_on_save = 0
+let g:ale_lint_on_text_changed = 1
+let g:ale_lint_on_enter = 1
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 0
+let g:ale_sign_error = '⨉'
+let g:ale_sign_warning = '…'
+"let g:ale_open_list = 1
+"let g:ale_keep_list_window_open = 1
+" lint
+nmap <Leader>lt <Plug>(ale_toggle)
+nmap <Leader>ln <Plug>(ale_next)
+nmap <Leader>lp <Plug>(ale_previous)
+nmap <Leader>lN <Plug>(ale_next_wrap)
+nmap <Leader>lP <Plug>(ale_previous_wrap)
+'''
+# }}}
+# tpope/vim-fugitive {{{
+repo = 'tpope/vim-fugitive'
+# }}}
+# itchyny/lightline.vim {{{
+[[plugins]] 
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+let g:lightline = {
+  \ 'colorscheme': 'PaperColor',
+  \ 'mode_map': {'c': 'NORMAL'},
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ],
+  \   'right': [ [ 'lineinfo',  'ale' ],
+  \              [ 'percent' ],
+  \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+  \ },
+  \ 'separator': { 'left': "\u2b80", 'right': "\u2b82" },
+  \ 'subseparator': {  'left': "\u2b81", 'right': "\u2b83" },
+  \ 'component_function': {
+  \   'modified': 'LightlineModified',
+  \   'readonly': 'LightlineReadonly',
+  \   'fugitive': 'LightlineFugitive',
+  \   'filename': 'LightlineFilename',
+  \   'fileformat': 'LightlineFileformat',
+  \   'filetype': 'LightlineFiletype',
+  \   'fileencoding': 'LightlineFileencoding',
+  \   'mode': 'LightlineMode',
+  \   'ale': 'ale#statusline#Status'
+  \ }
+\ }
+function! LightlineModified()
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+function! LightlineReadonly()
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+endfunction
+function! LightlineFilename()
+  return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \  &ft == 'unite' ? unite#get_status_string() :
+        \  &ft == 'vimshell' ? vimshell#get_status_string() :
+        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+endfunction
+function! LightlineFugitive()
+  if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+    return fugitive#head()
+  else
+    return ''
+  endif
+endfunction
+function! LightlineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+function! LightlineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+function! LightlineMode()
+  return winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+'''
+# }}}
+# majutsushi/tagbar {{{
+[[plugins]]
+repo = 'majutsushi/tagbar'
+hook_add = '''
+let g:tagbar_width = 75
+let g:tagbar_ctags_bin = '/usr/local/bin/ctags'
+nnoremap to :<C-u>TagbarToggle<CR>
+'''
+# }}}
+# vim-jp/vimdoc-ja {{{
+#[[plugins]] # Japanese doc
+#repo = 'vim-jp/vimdoc-ja'
+#on_ft = 'help'
+#hook_add = '''
+#set helplang=ja,en
+#'''
+# }}}
+# kaizoa/xz-peco.nvim {{{
+[[plugins]]
+repo = 'kaizoa/xz-peco.nvim'
+hook_add = '''
+nnoremap <Leader>fn :<C-U>call xz#peco#edit('git ls-files')<CR>
+'''
+# }}}
+# kaizoa/xz-gtags.vim {{{
+[[plugins]]
+repo = 'kaizoa/xz-gtags.vim'
+hook_add = '''
+let g:xz#gtags#auto_update = 1
+let g:xz#gtags#auto_update_ft = ['php']
+'''
+# }}}
+
+
+# Golang
+# -----------------
+# fatih/vim-go {{{
+[[plugins]]
+repo = 'fatih/vim-go'
+on_ft = 'go'
+depends = ['majutsushi/tagbar']
+hook_add = '''
+let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+        \ 'p:package',
+        \ 'i:imports:1',
+        \ 'c:constants',
+        \ 'v:variables',
+        \ 't:types',
+        \ 'n:interfaces',
+        \ 'w:fields',
+        \ 'e:embedded',
+        \ 'm:methods',
+        \ 'r:constructor',
+        \ 'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+        \ 't' : 'ctype',
+        \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+        \ 'ctype' : 't',
+        \ 'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent'
+\ }
+let g:go_term_enabled = 0
+let g:go_term_mode = "split"
+let g:go_term_height = 30
+let g:go_term_width = 30
+let g:go_jump_to_error = 0
+let g:go_highlight_array_whitespace_error = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_trailing_whitespace_error = 1
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_format_strings = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_types = 1
+let g:go_highlight_chan_whitespace_error = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_space_tab_error = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_generate_tags = 1
+let g:go_highlight_string_spellcheck = 1
+function! XZ_Go_TermToggle() abort
+  if g:go_term_enabled
+    let g:go_term_enabled = 0
+    echo 'vim-go: term disabled'
+  else
+    let g:go_term_enabled = 1
+    echo 'vim-go: term enabled'
+  endif
+endfunction
+function! XZ_Go_TestOption() abort
+  if g:go_term_enabled
+    return '-v'
+  else
+    return ''
+  endif
+endfunction
+augroup xz_go
+  autocmd! xz_go
+  autocmd FileType go nmap <Space>mk <Plug>(go-build)
+  autocmd FileType go nmap <Space>md <Plug>(go-doc)
+  autocmd FileType go nmap gd <Plug>(go-def)
+  autocmd FileType go nmap gi <Plug>(go-import)
+  autocmd FileType go nmap gm <Plug>(go-implements)
+  autocmd FileType go nmap gr <Plug>(go-referrers)
+  autocmd FileType go nmap gR <Plug>(go-callers)
+  autocmd FileType go nmap Tc <Plug>(go-test-compile)
+  autocmd FileType go nmap Tv <Plug>(go-coverage-browser)
+  autocmd FileType go nnoremap Tp :<C-U>call go#cmd#Test(!g:go_jump_to_error, 0, XZ_Go_TestOption())<CR>
+  autocmd FileType go nnoremap Tf :<C-U>call go#cmd#TestFunc(!g:go_jump_to_error, XZ_Go_TestOption())<CR>
+  autocmd FileType go nnoremap gt :<C-U>call XZ_Go_TermToggle()<CR>
+augroup END
+'''
+# }}}
+# jodosha/vim-godebug {{{
+[[plugins]]
+repo = 'jodosha/vim-godebug'
+on_ft = 'go'
+depends = ['fatih/vim-go']
+hook_add = '''
+augroup xz_go_debug
+  autocmd!
+  autocmd FileType go nnoremap gB :<C-U>GoToggleBreakpoint<CR>
+augroup END
+'''
+# }}}
+
+
+# PHP
+# -----------------
+# kaizoa/xz-php.vim {{{
+[[plugins]]
+repo = 'kaizoa/xz-php.vim'
+on_ft = 'php'
+hook_add = '''
+augroup xz_php
+  autocmd! xz_php
+  autocmd FileType php nnoremap gf :<C-U>XZGtags -g                " grep
+  autocmd FileType php nnoremap gl :<C-U>XZGtags -f %<CR>          " function list
+  autocmd FileType php nnoremap gd :<C-U>XZGtags <C-r><C-w><CR>    " find usage
+  autocmd FileType php nnoremap gr :<C-U>XZGtags -r <C-r><C-w><CR> " find references
+augroup END
+'''
+# }}}

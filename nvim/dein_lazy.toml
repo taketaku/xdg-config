@@ -1,0 +1,105 @@
+# vim:set foldmethod=marker:
+# Shougo/neomru.vim {{{
+#[[plugins]]
+#repo = 'Shougo/neomru.vim'
+#on_path = '.*'
+# }}}
+# jiangmiao/auto-pairs {{{
+[[plugins]]
+repo = 'jiangmiao/auto-pairs'
+on_i = 1
+# }}}
+# Shougo/neoyank.vim {{{
+[[plugins]]
+repo = 'Shougo/neoyank.vim'
+on_path = '.*'
+on_i = 1
+# }}}
+# Shougo/neosnippet-snippets {{{
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+hook_add = '''
+let g:neosnippet#snippets_directory='~/.config/neosnippet-snippets/'
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+'''
+# }}}
+# Shougo/neosnippet {{{
+[[plugins]]
+repo = 'Shougo/neosnippet'
+depends = ['neosnippet-snippets']
+on_i = 1
+on_ft = ['snippet']
+# }}}
+# Shougo/deoplete.nvim {{{
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+on_i = 1 # only insert
+hook_add = '''
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_smart_case = 1
+inoremap <expr><C-h> deolete#mappings#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
+'''
+# }}}
+
+# TXT
+# -----------------
+# cespare/vim-toml {{{
+[[plugins]] # Toml
+repo  = 'cespare/vim-toml'
+on_ft = 'toml'
+# }}}
+# rcmdnk/vim-markdown {{{
+[[plugins]] # Markdown
+repo = 'rcmdnk/vim-markdown'
+on_ft = ['markdown','mkd','md']
+hook_add = '''
+    let g:vim_markdown_frontmatter = 1
+    let g:vim_markdown_math = 1
+'''
+# }}}
+
+# Golang
+# -----------------
+# zchee/deoplete-go {{{
+[[plugins]]
+repo = 'zchee/deoplete-go'
+on_i = 1
+on_ft = 'go'
+hook_add = '''
+let g:deoplete#sources#go#align_class = 1
+let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+let g:deoplete#sources#go#package_dot = 1
+'''
+# }}}
+
+# PHP
+# -----------------
+# flyinshadow/php_localvarcheck.vim {{{
+[[plugins]]
+repo = 'flyinshadow/php_localvarcheck.vim'
+on_ft = ['php']
+hook_add = '''
+let g:php_localvarcheck_enable = 1
+"let g:php_localvarcheck_global = 0
+'''
+# }}}
+

@@ -1,0 +1,49 @@
+snippet     ife
+options     head
+    if ${1:err != nil} {
+        ${0:TARGET}
+    }
+
+snippet     funt
+options     head
+    func Test(t *testing.T) {
+        ${0:TARGET}
+    }
+
+snippet     time.Date
+options     head
+    time.Date(y, m, d, 0, 0, 0, 0, time.Local)
+
+snippet     ifterr
+options     head
+    if err != nil {
+        t.Errorf("%+v", err)
+    }
+
+snippet     terrv
+options     head
+    t.Errorf("%+v", err)
+
+snippet     terrpc
+options     head
+    t.Error(pretty.Compare(e, a))
+
+snippet     terrm
+options     head
+    t.Errorf("{\n - %v\n + %v\n}", e, a)
+
+snippet     logi
+options     head
+    log.Print("[INFO] ${0:TARGET}")
+
+snippet     logif
+options     head
+    log.Printf("[INFO] %+v", ${0:TARGET})
+
+snippet     loge
+options     head
+    log.Printf("[ERROR] %+v", err)
+
+snippet     logw
+options     head
+    log.Printf("[WARN] %+v", err)
