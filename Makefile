@@ -1,7 +1,7 @@
 ANSIBLE_PLAYBOOK:= HOMEBREW_CASK_OPTS="--appdir=/Applications" ansible-playbook -i .inventory
 
 .PHONY: all
-all: xdg-config ansible-playbook
+all: xdg-config ansible-playbook vscode
 
 
 .PHONY: ansible-playbook
@@ -9,9 +9,14 @@ ansible-playbook: ansible
 	cd ansible; $(ANSIBLE_PLAYBOOK) playbook.yml
 
 
+XDG_CONFIG_HOME=$(HOME)/.config
+
 .PHONY: xdg-config
 xdg-config:
-	ln -fns $(shell pwd) ${HOME}/.config
+	if [ -e $(XDG_CONFIG_HOME) -a ! -L $(XDG_CONFIG_HOME) ]; then\
+  rm -rf $(XDG_CONFIG_HOME);\
+fi
+	ln -fns $(shell pwd) ${XDG_CONFIG_HOME}
 
 
 .PHONY: git
