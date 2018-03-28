@@ -43,7 +43,6 @@ alias ssh         ssh $SSH_CONFIG $SSH_ID
 alias ssh-copy-id ssh-copy-id $SSH_ID
 # }}}
 
-alias gp "cd (ghq list -p | peco)"
 
 # cheat {{{
 set -x DEFAULT_CHEAT_DIR $XDG_CONFIG_HOME/cheat
@@ -122,6 +121,10 @@ end
 #    brew cask install "$app";
 #  end
 #end
+
+alias gp 'cd (ghq root)/(ghq list | peco)'
+alias gh-top 'hub browse (ghq list | peco | cut -d "/" -f 2,3)'
+eval (hub alias -s)
 
 # Run tmux
 pgrep tmux > /dev/null ^&1; or tmux -f $XDG_CONFIG_HOME/tmux/tmux.conf

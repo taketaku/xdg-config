@@ -61,6 +61,7 @@ nnoremap <C-n> :bn<CR>
 "定義移動
 "nnoremap <C-S-P> :tp<CR>
 "nnoremap <C-S-N> :tn<CR>
+inoremap <silent> jj <ESC>
 " }}}
 " termui settings {{{
 if has("termguicolors")

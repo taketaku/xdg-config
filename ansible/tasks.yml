@@ -32,13 +32,23 @@
     - { name: ctags }
     - { name: ag }
     - { name: tree }
-    - { name: peco }
-    - { name: ghq }
     - { name: graphviz }
     - { name: coreutils }
     - { name: chromedriver }
     - { name: git-secrets }
     - { name: reattach-to-user-namespace }
+    - { name: go }
+    - { name: dep }
+    - { name: hub }
+    - { name: ghq }
+    - { name: peco }
+
+
+# - name: Install oh-my-fish
+#   shell: curl -sSL http://get.oh-my.fish | fish
+#   args:
+#     executable: /bin/bash
+#     creates: ~/.local/share/omf/
 
 
 - name: Change user shell
@@ -51,7 +61,7 @@
       fi
   args:
       executable: /bin/bash
-  changed_when: false  
+  changed_when: false
 
 
 - name: Install homebrew cask packages
@@ -60,7 +70,7 @@
     - { name: iterm2 }
     - { name: visual-studio-code }
     - { name: gimp }
-#    - { name: google-chrome }
+    - { name: google-chrome }
     - { name: google-japanese-ime }
     - { name: slack }
     - { name: sequel-pro }

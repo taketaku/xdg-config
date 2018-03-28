@@ -1,0 +1,68 @@
+{
+    "workbench.colorTheme": "textmate",
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.showTabs": true,
+
+    "window.openFilesInNewWindow": "off",
+    "window.zoomLevel": 0,
+
+    "files.trimTrailingWhitespace": true,
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true,
+        "**/vendor/**": true
+    },
+
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/bundle": true,
+        "**/composer": true,
+        "**/tmp": true,
+        "**/.tmp": true
+    },
+
+    "editor.fontSize":14,
+    "editor.fontFamily": "Ricty",
+    "editor.wordWrap": "on",
+    "editor.minimap.enabled": false,
+    "editor.cursorBlinking": "smooth",
+    "editor.renderWhitespace": "boundary",
+    "editor.formatOnType": true,
+    "editor.tabSize": 4,
+    "editor.renderControlCharacters": true,
+    "editor.renderIndentGuides": true,
+    "editor.renderLineHighlight": "all",
+    "diffEditor.renderSideBySide": false,
+
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.shell.osx": "/usr/local/bin/fish",
+
+    "extensions.autoUpdate": true,
+
+    // "git.autofetch": true,
+
+    "go.gopath": "/Users/kaizoa/Codes",
+
+    "team.showWelcomeMessage": false,
+
+    "vim.insertModeKeyBindings": [
+        { "before": ["j","j"], "after": ["<Esc>"] }
+    ],
+    "vim.otherModesKeyBindingsNonRecursive": [
+        {"before": ["u"],      "after": [], "commands": [{"command": "undo"}]},
+        {"before": ["<C-r>"],  "after": [], "commands": [{"command": "redo"}]},
+        {"before": ["g", "r"], "after": [], "commands": [{"command": "editor.action.referenceSearch.trigger"}]},
+        {"before": ["g", "i"], "after": [], "commands": [{"command": "editor.action.goToImplementation"}]},
+        {"before": ["t", "t"], "after": [], "commands": [{"command": "workbench.action.toggleSidbarVisibility"}]},
+        {"before": ["t", "f"], "after": [], "commands": [{"command": "workbench.files.action.focusFilesExplorer"}]},
+    ],
+    "vim.useSystemClipboard":true,
+    "vim.cmdLineInitialColon": true,
+    "vim.hlsearch": true,
+    "vim.easymotion": true,
+    "vim.visualstar": true,
+    "vim.useCtrlKeys": true,
+    "extensions.ignoreRecommendations": false,
+    "explorer.confirmDelete": false,
+}
