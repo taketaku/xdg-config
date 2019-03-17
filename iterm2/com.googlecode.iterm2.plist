@@ -919,7 +919,7 @@
 			<key>Window Type</key>
 			<integer>2</integer>
 			<key>Working Directory</key>
-			<string>/Users/kaizoa</string>
+			<string>/Users/tt</string>
 		</dict>
 	</array>
 	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
@@ -966,7 +966,7 @@
 		</dict>
 	</dict>
 	<key>PrefsCustomFolder</key>
-	<string>/Users/kaizoa/Documents</string>
+	<string>/Users/tt/Documents</string>
 	<key>PromptOnQuit</key>
 	<false/>
 	<key>SUEnableAutomaticChecks</key>

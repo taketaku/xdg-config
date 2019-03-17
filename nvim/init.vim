@@ -73,11 +73,11 @@ endif
 " python runtime settings {{{
 "let g:python_host_prog = "/usr/bin/python2"
 "let g:python3_host_prog = "/usr/bin/python3"
-let g:python_host_prog = "/Users/kaizoa/.anyenv/envs/pyenv/versions/2.7.14/bin/python"
-let g:python3_host_prog = "/Users/kaizoa/.anyenv/envs/pyenv/versions/3.6.3/bin/python"
+let g:python_host_prog = "/Users/tt/.anyenv/envs/pyenv/versions/2.7.14/bin/python"
+let g:python3_host_prog = "/Users/tt/.anyenv/envs/pyenv/versions/3.6.3/bin/python"
 " }}}
 " ruby runtime settings {{{
-let g:ruby_host_prog = "/Users/kaizoa/.anyenv/envs/rbenv/versions/2.4.2/bin/ruby"
+let g:ruby_host_prog = "/Users/tt/.anyenv/envs/rbenv/versions/2.4.2/bin/ruby"
 " }}}
 " global/gtags settings {{{
 " }}}
